@@ -49,7 +49,7 @@ return array(
         'mysql' => array(
             'driver'    => 'mysql',
             'host'      => 'localhost',
-            'database'  => 'energy',
+            'database'  => 'energy_dev',
             'username'  => 'root',
             'password'  => 'root',
             'charset'   => 'utf8',

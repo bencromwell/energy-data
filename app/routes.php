@@ -11,7 +11,12 @@
 |
 */
 
-Route::get('/', function()
-{
-	return View::make('hello');
-});
+Route::get('/', array('as' => 'index', 'uses' => 'HomeController@showIndex'));
+
+Route::post('/meter-readings', array('as' => 'submit-meter-readings', 'uses' => 'MeterController@postMeterReadings'));
+
+Route::get('/last-reading', array('as' => 'last-reading', 'uses' => 'MeterController@getMeterReadings'));
+
+Route::get('/overall', array('as' => 'overall', 'uses' => 'MeterController@getOverall'));
+
+Route::get('/monthly', array('as' => 'monthly', 'uses' => 'MonthlyController@index'));
