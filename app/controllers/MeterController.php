@@ -7,8 +7,7 @@ class MeterController extends BaseController
 
     private function getPricesModel()
     {
-        $prices = Price::all();
-        return $prices[0];
+        return Price::all()->first();
     }
 
     public function postMeterReadings()
@@ -45,68 +44,72 @@ class MeterController extends BaseController
         return Redirect::to('/last-reading');
     }
 
-    public function getMeterReadings()
-    {
-        $calc = new CostCalculator(CostCalculator::TYPE_ELECTRICITY);
-
-        $prices = $this->getPricesModel();
-
-        // Elec
-
-        // Get the last two readings, calculate the diff in kwh
-        $models = Electricity::orderBy('date', ' DESC')->limit(2)->get();
-        if (count($models) === 2) {
-            $eRes = $calc->calculate($models[0], $models[1], $prices);
-        } else {
-            $eRes = false;
-        }
-
-        // Gas
-
-        $calc = new CostCalculator(CostCalculator::TYPE_GAS);
-        $models = Gas::orderBy('date', ' DESC')->limit(2)->get();
-
-        if (count($models) === 2) {
-            $gRes = $calc->calculate($models[0], $models[1], $prices);
-        } else {
-            $gRes = false;
-        }
-
-        return View::make('last-reading')->nest('child', 'meter-data', array(
-            'eRes' => $eRes,
-            'gRes' => $gRes,
-        ));
-    }
-
-    public function getOverall()
+    /**
+     * @param Gas|null         $gasModel1
+     * @param Gas|null         $gasModel2
+     * @param Electricity|null $elecModel1
+     * @param Electricity|null $elecModel2
+     * @param string           $viewName
+     *
+     * @return \Illuminate\View\View
+     */
+    private function readingsComparisonView($gasModel1, $gasModel2, $elecModel1, $elecModel2, $viewName)
     {
         $prices = $this->getPricesModel();
 
         $eCalc = new CostCalculator(CostCalculator::TYPE_ELECTRICITY);
         $gCalc = new CostCalculator(CostCalculator::TYPE_GAS);
 
-        $first = Electricity::orderBy('date', 'DESC')->limit(1)->get();
-        $last  = Electricity::orderBy('date', 'ASC')->limit(1)->get();
-
-        if (!empty($first[0]) && !empty($last[0]) && $first[0]->id !== $last[0]->id) {
-            $eRes = $eCalc->calculate($first[0], $last[0], $prices);
+        if (!is_null($elecModel1) && !is_null($elecModel2) && $elecModel1->id !== $elecModel2->id) {
+            $eRes = $eCalc->calculate($elecModel1, $elecModel2, $prices);
         } else {
             $eRes = false;
         }
 
-        $first = Gas::orderBy('date', 'DESC')->limit(1)->get();
-        $last  = Gas::orderBy('date', 'ASC')->limit(1)->get();
-
-        if (!empty($first[0]) && !empty($last[0]) && $first[0]->id !== $last[0]->id) {
-            $gRes = $gCalc->calculate($first[0], $last[0], $prices);
+        if (!is_null($gasModel1) && !is_null($gasModel2) && $gasModel1->id !== $gasModel2->id) {
+            $gRes = $gCalc->calculate($gasModel1, $gasModel2, $prices);
         } else {
             $gRes = false;
         }
 
-        return View::make('overall')->nest('child', 'meter-data', array(
+        return View::make($viewName)->nest('child', 'meter-data', array(
             'eRes' => $eRes,
             'gRes' => $gRes,
         ));
+    }
+
+    public function getMeterReadings()
+    {
+        /** @var $gModels \Illuminate\Database\Eloquent\Collection */
+        $gModels = Gas::orderBy('date', ' DESC')->limit(2)->get();
+
+        /** @var $eModels \Illuminate\Database\Eloquent\Collection */
+        $eModels = Electricity::orderBy('date', ' DESC')->limit(2)->get();
+
+        return $this->readingsComparisonView(
+            $gModels->get(0), $gModels->get(1),
+            $eModels->get(0), $eModels->get(1),
+            'last-reading'
+        );
+    }
+
+    public function getOverall()
+    {
+        /** @var $first Gas|null */
+        $gFirst = Gas::orderBy('date', 'DESC')->limit(1)->get()->first();
+        /** @var $last Gas|null */
+        $gLast  = Gas::orderBy('date', 'ASC')->limit(1)->get()->first();
+
+        /** @var $first Electricity */
+        $eFirst = Electricity::orderBy('date', 'DESC')->limit(1)->get()->first();
+        /** @var $last Electricity */
+        $eLast  = Electricity::orderBy('date', 'ASC')->limit(1)->get()->first();
+
+        return $this->readingsComparisonView(
+            $gFirst, $gLast,
+            $eFirst, $eLast,
+            'overall'
+        );
     }
 
 }
