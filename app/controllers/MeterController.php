@@ -37,9 +37,7 @@ class MeterController extends BaseController
 
         if (!empty($post['gas']) && $post['gas'] > 0) {
 
-            $g = new Gas();
-            $g->date = $date;
-            $g->volume = $post['gas'];
+            $g = ImperialGas::createNew($date, $post['gas'], new GasMetaData());
             $g->save();
 
         }
