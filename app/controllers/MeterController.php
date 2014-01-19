@@ -54,7 +54,7 @@ class MeterController extends BaseController
         // Elec
 
         // Get the last two readings, calculate the diff in kwh
-        $models = Electricity::orderBy('id', ' DESC')->limit(2)->get();
+        $models = Electricity::orderBy('date', ' DESC')->limit(2)->get();
         if (count($models) === 2) {
             $eRes = $calc->calculate($models[0], $models[1], $prices);
         } else {
@@ -64,7 +64,7 @@ class MeterController extends BaseController
         // Gas
 
         $calc = new CostCalculator(CostCalculator::TYPE_GAS);
-        $models = Gas::orderBy('id', ' DESC')->limit(2)->get();
+        $models = Gas::orderBy('date', ' DESC')->limit(2)->get();
 
         if (count($models) === 2) {
             $gRes = $calc->calculate($models[0], $models[1], $prices);
@@ -85,8 +85,8 @@ class MeterController extends BaseController
         $eCalc = new CostCalculator(CostCalculator::TYPE_ELECTRICITY);
         $gCalc = new CostCalculator(CostCalculator::TYPE_GAS);
 
-        $first = Electricity::orderBy('id', 'DESC')->limit(1)->get();
-        $last  = Electricity::orderBy('id', 'ASC')->limit(1)->get();
+        $first = Electricity::orderBy('date', 'DESC')->limit(1)->get();
+        $last  = Electricity::orderBy('date', 'ASC')->limit(1)->get();
 
         if (!empty($first[0]) && !empty($last[0]) && $first[0]->id !== $last[0]->id) {
             $eRes = $eCalc->calculate($first[0], $last[0], $prices);
@@ -94,8 +94,8 @@ class MeterController extends BaseController
             $eRes = false;
         }
 
-        $first = Gas::orderBy('id', 'DESC')->limit(1)->get();
-        $last  = Gas::orderBy('id', 'ASC')->limit(1)->get();
+        $first = Gas::orderBy('date', 'DESC')->limit(1)->get();
+        $last  = Gas::orderBy('date', 'ASC')->limit(1)->get();
 
         if (!empty($first[0]) && !empty($last[0]) && $first[0]->id !== $last[0]->id) {
             $gRes = $gCalc->calculate($first[0], $last[0], $prices);
