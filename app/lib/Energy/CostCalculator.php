@@ -18,12 +18,19 @@ class CostCalculator
         $this->_type = $type;
     }
 
-    function calculate($model1, $model2, $prices)
+    /**
+     * @param ICalculable $model1
+     * @param ICalculable $model2
+     * @param IPrices     $prices
+     *
+     * @return CostResult
+     */
+    public function calculate($model1, $model2, $prices)
     {
-        $kwh = $model1->kwh - $model2->kwh;
+        $kwh = $model1->getKwh() - $model2->getKwh();
 
-        $day0 = DateTime::createFromFormat('Y-m-d', $model2->date);
-        $day1 = DateTime::createFromFormat('Y-m-d', $model1->date);
+        $day0 = DateTime::createFromFormat('Y-m-d', $model2->getDate());
+        $day1 = DateTime::createFromFormat('Y-m-d', $model1->getDate());
 
         /** @var $di DateInterval */
         $di = date_diff($day0, $day1);
@@ -31,9 +38,9 @@ class CostCalculator
         $days = $di->days;
 
         if ($this->_type === self::TYPE_ELECTRICITY) {
-            $cost = ($prices->electricity_standing * $days) + ($prices->electricity_kwh * $kwh);
+            $cost = ($prices->getStandingElectricity() * $days) + ($prices->getElectricityKwh() * $kwh);
         } else {
-            $cost = ($prices->gas_standing * $days) + ($prices->gas_kwh * $kwh);
+            $cost = ($prices->getStandingGas() * $days) + ($prices->getGasKwh() * $kwh);
         }
 
         return new CostResult($kwh, $cost, $days);
