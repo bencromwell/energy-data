@@ -14,11 +14,11 @@ class BaseController extends Controller
             $this->layout = View::make($this->layout);
         }
 
-        $e = Electricity::orderBy('id', 'DESC')->limit(1)->get();
-        $g = Gas::orderBy('id', 'DESC')->limit(1)->get();
+        $e = Electricity::orderBy('id', 'DESC')->limit(1)->get()->first();
+        $g = Gas::orderBy('id', 'DESC')->limit(1)->get()->first();
 
-        View::share('lastGas', $g[0]->volume);
-        View::share('lastElectricity', $e[0]->kwh);
+        View::share('lastGas', is_null($g) ? '' : $g->volume);
+        View::share('lastElectricity', is_null($e) ? '' : $e->kwh);
     }
 
 }
