@@ -24,7 +24,7 @@ class MysqlStore implements IDataStore
      */
     public function getFirstReadingForMonth(DateTime $month)
     {
-        $q = \DB::getPdo()->query('SELECT `kwh`, `date` FROM ' . $this->table . ' WHERE MONTH(`date`) = :month AND YEAR(`date`) = :year ORDER BY `date` ASC LIMIT 1');
+        $q = \DB::getPdo()->prepare('SELECT `kwh`, `date` FROM ' . $this->table . ' WHERE MONTH(`date`) = :month AND YEAR(`date`) = :year ORDER BY `date` ASC LIMIT 1');
 
         $m = $month->format('m');
         $y = $month->format('Y');
