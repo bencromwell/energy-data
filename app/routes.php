@@ -20,3 +20,13 @@ Route::get('/last-reading', array('as' => 'last-reading', 'uses' => 'MeterContro
 Route::get('/overall', array('as' => 'overall', 'uses' => 'MeterController@getOverall'));
 
 Route::get('/monthly', array('as' => 'monthly', 'uses' => 'MonthlyController@index'));
+
+Route::get('/test/{type}', function ($type) {
+
+    $ma = new \Energy\Etl\MonthlyAggregator(
+        new \Energy\Etl\MysqlStore((int) $type)
+    );
+
+    $ma->run(new DateTime());
+
+});
