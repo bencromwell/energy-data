@@ -7,6 +7,9 @@ use DateTime;
 interface IDataStore
 {
 
+    const TYPE_ELECTRICITY = 1;
+    const TYPE_GAS         = 2;
+
     /**
      * @param DateTime $month
      *
