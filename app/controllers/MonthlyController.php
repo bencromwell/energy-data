@@ -5,7 +5,8 @@ class MonthlyController extends BaseController
 
     public function index()
     {
-        $from = DateTime::createFromFormat('Y-m-d', '2013-12-01');
+        $startFrom = '2013-12-01';
+        $from = DateTime::createFromFormat('Y-m-d', $startFrom); // todo: config or retrieve dynamically
         $from->setTime(0, 0, 0);
 
         $now  = new DateTime();
@@ -49,12 +50,30 @@ class MonthlyController extends BaseController
             return (($prices->getStandingGas() * 30) + ($prices->getGasKwh() * $kwh * 30)) / 100;
         };
 
+        /** @var $eData Monthly[] */
+        /** @var $gData Monthly[] */
+        $eData = $e->get();
+        $gData = $g->get();
+
+        $chart = array('start' => strtotime($startFrom) * 1000);
+
+        $chart['e'] = array();
+        foreach ($eData as $model) {
+            array_push($chart['e'], array(strtotime($model->month) * 1000, (int) $model->kwh * 30));
+        }
+        $chart['g'] = array();
+        foreach ($gData as $model) {
+            array_push($chart['g'], array(strtotime($model->month) * 1000, (int) $model->kwh * 30));
+        }
+
         return View::make('monthly', array(
             'months'      => $months,
-            'electricity' => $e->get(),
-            'gas'         => $g->get(),
+            'electricity' => $eData,
+            'gas'         => $gData,
             'gCalc'       => $gasCalc,
             'eCalc'       => $elecCalc,
+
+            'chart'       => json_encode($chart),
         ));
     }
 

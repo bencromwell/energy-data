@@ -65,6 +65,8 @@
     </div>
     <script src="js/jquery-2.0.3.js"></script>
     <script src="js/foundation.min.js"></script>
+    <script src="js/highcharts.js"></script>
+    <script src="js/energy.js"></script>
     <script>
         $(document).foundation();
     </script>
