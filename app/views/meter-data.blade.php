@@ -2,6 +2,7 @@
     <div class="large-6 columns">
         <h2>
             Electricity
+            <small>{{ $eDate }}</small>
         </h2>
         @if ($eRes)
         <table>
@@ -43,6 +44,7 @@
     <div class="large-6 columns">
         <h2>
             Gas
+            <small>{{ $eDate }}</small>
         </h2>
         @if ($gRes)
         <table>
