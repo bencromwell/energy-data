@@ -44,7 +44,7 @@
     <div class="large-6 columns">
         <h2>
             Gas
-            <small>{{ $eDate }}</small>
+            <small>{{ $gDate }}</small>
         </h2>
         @if ($gRes)
         <table>
