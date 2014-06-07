@@ -83,8 +83,8 @@ class MeterController extends BaseController
         }
 
         return View::make($viewName)->nest('child', 'meter-data', array(
-            'eDate' => date('d.m.Y', strtotime($elecModel1->date)),
-            'gDate' => date('d.m.Y', strtotime($gasModel1->date)),
+            'eDate' => is_null($elecModel1) ? '' : date('d.m.Y', strtotime($elecModel1->date)),
+            'gDate' => is_null($gasModel1) ? '' : date('d.m.Y', strtotime($gasModel1->date)),
             'eRes'  => $eRes,
             'gRes'  => $gRes,
         ));
