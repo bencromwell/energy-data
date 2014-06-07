@@ -12,6 +12,18 @@
     </div>
 </div>
 
+<hr>
+
+<div class="row">
+    <div class="large-12 columns">
+
+        <div id="chart"></div>
+
+    </div>
+</div>
+
+<hr>
+
 <div class="row">
     <div class="large-6 columns">
         <h2>Electricity</h2>
@@ -54,14 +66,6 @@
             @endforeach
             </tbody>
         </table>
-
-    </div>
-</div>
-
-<div class="row">
-    <div class="large-12 columns">
-
-        <div id="chart"></div>
 
     </div>
 </div>
