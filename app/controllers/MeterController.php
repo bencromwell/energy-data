@@ -83,8 +83,10 @@ class MeterController extends BaseController
         }
 
         return View::make($viewName)->nest('child', 'meter-data', array(
-            'eRes' => $eRes,
-            'gRes' => $gRes,
+            'eDate' => date('d.m.Y', strtotime($elecModel2->date)),
+            'gDate' => date('d.m.Y', strtotime($gasModel2->date)),
+            'eRes'  => $eRes,
+            'gRes'  => $gRes,
         ));
     }
 
