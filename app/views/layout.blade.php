@@ -56,6 +56,11 @@
                             Monthly
                         </a>
                     </li>
+                    <li {{ URL::route('tariff') === URL::current() ? ' class="active"' : '' }}>
+                        <a class="" href="{{ route('tariff') }}">
+                            Tariff
+                        </a>
+                    </li>
                 </ul>
             </section>
         </nav>
