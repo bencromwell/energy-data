@@ -18,7 +18,8 @@ $(document).ready(function () {
             yAxis: {
                 title: {
                     text: 'kWh'
-                }
+                },
+                min: 0
             },
             series: [
                 {
