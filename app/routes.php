@@ -21,6 +21,8 @@ Route::get('/overall', array('as' => 'overall', 'uses' => 'MeterController@getOv
 
 Route::get('/monthly', array('as' => 'monthly', 'uses' => 'MonthlyController@index'));
 
+Route::get('/tariff', array('as' => 'tariff', 'uses' => 'TariffController@index'));
+
 Route::get('/test/{type}', function ($type) {
 
     $ma = new \Energy\Etl\MonthlyAggregator(
