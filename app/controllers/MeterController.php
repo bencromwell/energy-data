@@ -7,7 +7,7 @@ class MeterController extends BaseController
 
     private function getPricesModel()
     {
-        return Price::all()->first();
+        return Price::all()->last();
     }
 
     public function postMeterReadings()

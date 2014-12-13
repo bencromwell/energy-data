@@ -5,7 +5,7 @@ class TariffController extends BaseController
 
     public function index()
     {
-        $prices = Price::all()->first();
+        $prices = Price::all()->last();
 
         return View::make('tariff', array(
             'prices' => $prices,
