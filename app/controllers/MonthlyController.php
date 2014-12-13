@@ -41,7 +41,7 @@ class MonthlyController extends BaseController
         $where .= ')';
         $g = Monthly::whereRaw($where);
 
-        $prices = Price::all()->first();
+        $prices = Price::all()->last();
         $elecCalc = function ($kwh) use ($prices) {
             return (($prices->getStandingElectricity() * 30) + ($prices->getElectricityKwh() * $kwh * 30)) / 100;
         };
