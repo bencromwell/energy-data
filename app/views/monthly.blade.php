@@ -20,6 +20,23 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="large-12 columns">
+        <ul class="button-group">
+            <li>
+                <a class="button {{ Input::get('standardise', false) ? 'blue' : 'secondary' }} tiny active" href="{{ URL::route('monthly', ['standardise' => 1]) }}">
+                    Standardised Readings (30 day months)
+                </a>
+            </li>
+            <li>
+                <a class="button {{ Input::get('standardise', false) ? 'secondary' : 'blue' }} tiny" href="{{ URL::route('monthly', ['standardise' => 0]) }}">
+                    Raw Readings
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
 <hr>
 
 <div class="row">

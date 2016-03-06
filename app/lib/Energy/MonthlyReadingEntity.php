@@ -7,6 +7,8 @@ use Carbon\Carbon;
 class MonthlyReadingEntity
 {
 
+    const STANDARD_MONTH_DAYS = 30;
+
     /** @var float */
     protected $reading;
 
@@ -49,6 +51,20 @@ class MonthlyReadingEntity
     public function getReading($raw = false)
     {
         return $raw ? $this->reading : (int) round($this->reading);
+    }
+
+    /**
+     * @param bool $raw - raw reading (float) or processed (rounded to an int)?
+     *
+     * @return int|float - reading standardised to a 30 day month
+     */
+    public function getStandardisedReading($raw = false)
+    {
+        $readingPerDay = $this->reading / $this->dateTime->daysInMonth;
+
+        $resultingReading = $readingPerDay * self::STANDARD_MONTH_DAYS;
+
+        return $raw ? $resultingReading : (int) round($resultingReading);
     }
 
     /**

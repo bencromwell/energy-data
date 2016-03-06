@@ -30,8 +30,10 @@ class MonthlyController extends BaseController
         $chart['e'] = [];
         $chart['g'] = [];
 
-        $this->populateData($elec, $chart['e'], $eData);
-        $this->populateData($gas, $chart['g'], $gData);
+        $standardise = \Input::get('standardise', false);
+
+        $this->populateData($elec, $chart['e'], $eData, $standardise);
+        $this->populateData($gas, $chart['g'], $gData, $standardise);
 
         $from = DateTime::createFromFormat('Y-m-d', $startFrom); // todo: config or retrieve dynamically
         $from->setTime(0, 0, 0);
@@ -62,19 +64,22 @@ class MonthlyController extends BaseController
         ));
     }
 
-    private function populateData($sourceData, &$chart, &$dataRows)
+    private function populateData($sourceData, &$chart, &$dataRows, $standardise = false)
     {
         foreach ($sourceData as $model) {
             $monthlyEntity = $this->processReading($model);
 
+            $reading = $standardise ? $monthlyEntity->getStandardisedReading() : $monthlyEntity->getReading();
+
             array_push($chart, [
-                    $monthlyEntity->getJsTimestamp(), $monthlyEntity->getReading()
+                    $monthlyEntity->getJsTimestamp(),
+                    $reading
                 ]
             );
 
             $obj = new stdClass();
             $obj->month = $monthlyEntity->getMonth();
-            $obj->kwh = $monthlyEntity->getReading();
+            $obj->kwh = $reading;
 
             $dataRows[] = $obj;
         }
