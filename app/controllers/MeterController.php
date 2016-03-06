@@ -32,11 +32,7 @@ class MeterController extends BaseController
             $e->kwh = $post['electricity'];
             $e->save();
 
-            $ma = new \Energy\Etl\MonthlyAggregator(
-                new \Energy\Etl\MysqlStore(\Energy\Etl\IDataStore::TYPE_ELECTRICITY)
-            );
-
-            $ma->run(new DateTime());
+            $calculator = new \Energy\Etl\DailyReadingCreator(\Energy\Etl\IDataStore::TYPE_ELECTRICITY);
         }
 
         if (!empty($post['gas']) && $post['gas'] > 0) {
@@ -44,11 +40,11 @@ class MeterController extends BaseController
             $g = ImperialGas::createNew($date, $post['gas'], new GasMetaData());
             $g->save();
 
-            $ma = new \Energy\Etl\MonthlyAggregator(
-                new \Energy\Etl\MysqlStore(\Energy\Etl\IDataStore::TYPE_GAS)
-            );
+            $calculator = new \Energy\Etl\DailyReadingCreator(\Energy\Etl\IDataStore::TYPE_GAS);
+        }
 
-            $ma->run(new DateTime());
+        if (isset($calculator)) {
+            $calculator->go();
         }
 
         return Redirect::to('/last-reading');
