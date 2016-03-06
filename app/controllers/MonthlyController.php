@@ -25,39 +25,13 @@ class MonthlyController extends BaseController
         $gData = [];
 
         $startFrom = '2013-09-01';
-        $chart = array('start' => strtotime($startFrom) * 1000);
+        $chart = ['start' => strtotime($startFrom) * 1000];
 
-        $chart['e'] = array();
-        foreach ($elec as $model) {
-            $dateTime = \Carbon\Carbon::createFromFormat('Y-m', $model->yr . '-' . $model->mth);
-            $dateTime->setTime(0, 0, 0);
+        $chart['e'] = [];
+        $chart['g'] = [];
 
-            array_push($chart['e'], array(
-                ($dateTime->getTimestamp() * 1000), (int) round($model->reading))
-            );
-
-            $obj = new stdClass();
-            $obj->month = $dateTime->format('Y-m');
-            $obj->kwh = (int) round($model->reading);
-
-            $eData[] = $obj;
-        }
-
-        $chart['g'] = array();
-        foreach ($gas as $model) {
-            $dateTime = \Carbon\Carbon::createFromFormat('Y-m', $model->yr . '-' . $model->mth);
-            $dateTime->setTime(0, 0, 0);
-
-            array_push($chart['g'], array(
-                ($dateTime->getTimestamp() * 1000), (int) round($model->reading))
-            );
-
-            $obj = new stdClass();
-            $obj->month = $dateTime->format('Y-m');
-            $obj->kwh = (int) round($model->reading);
-
-            $gData[] = $obj;
-        }
+        $this->populateData($elec, $chart['e'], $eData);
+        $this->populateData($gas, $chart['g'], $gData);
 
         $from = DateTime::createFromFormat('Y-m-d', $startFrom); // todo: config or retrieve dynamically
         $from->setTime(0, 0, 0);
@@ -86,6 +60,32 @@ class MonthlyController extends BaseController
 
             'chart'       => json_encode($chart),
         ));
+    }
+
+    private function populateData($sourceData, &$chart, &$dataRows)
+    {
+        foreach ($sourceData as $model) {
+            $monthlyEntity = $this->processReading($model);
+
+            array_push($chart, [
+                    $monthlyEntity->getJsTimestamp(), $monthlyEntity->getReading()
+                ]
+            );
+
+            $obj = new stdClass();
+            $obj->month = $monthlyEntity->getMonth();
+            $obj->kwh = $monthlyEntity->getReading();
+
+            $dataRows[] = $obj;
+        }
+    }
+
+    private function processReading($model)
+    {
+        $dateTime = \Carbon\Carbon::createFromFormat('Y-m', $model->yr . '-' . $model->mth);
+        $dateTime->setTime(0, 0, 0);
+
+        return new \Energy\MonthlyReadingEntity($model->reading, $dateTime);
     }
 
 }

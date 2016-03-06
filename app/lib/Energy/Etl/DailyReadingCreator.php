@@ -30,9 +30,11 @@ class DailyReadingCreator
             });
         }
 
-        /** @var \Energy\ICalculable[] $values */
+        // for now, just wipe it and recreate the lot
+        // future addition - record the last reading we had and only process new values
+        \DB::delete('DELETE FROM `daily` WHERE `type` = :type', [':type' => $this->type]);
 
-//        $prices = \Price::all();
+        /** @var \Energy\ICalculable[] $values */
 
         /** @var \Daily[] $dailyReadings */
         $dailyReadings = [];
