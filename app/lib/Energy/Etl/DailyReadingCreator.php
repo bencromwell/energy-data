@@ -3,7 +3,6 @@
 namespace Energy\Etl;
 
 use Carbon\Carbon;
-use DateTime;
 
 class DailyReadingCreator
 {
@@ -47,8 +46,8 @@ class DailyReadingCreator
                 continue;
             }
 
-            $thisDate = \Carbon\Carbon::createFromFormat('Y-m-d', $model->getDate());
-            $previousDate = \Carbon\Carbon::createFromFormat('Y-m-d', $previous->getDate());
+            $thisDate = Carbon::createFromFormat('Y-m-d', $model->getDate());
+            $previousDate = Carbon::createFromFormat('Y-m-d', $previous->getDate());
 
             $thisDate->setTime(0, 0, 0);
             $previousDate->setTime(0, 0, 0);
@@ -65,12 +64,9 @@ class DailyReadingCreator
                 $daily->day = $day->format('Y-m-d');
                 $daily->kwh = $kwhPerDay;
                 $dailyReadings[] = $daily;
-                //echo $day->format('Y-m-d') . ' = ' . $kwhPerDay . PHP_EOL;
-                $day->addDay();
-//                print_r($daily->attributesToArray());
-            }
 
-            //echo 'From ' . $previous->getDate() . ' to ' . $model->getDate() . ': ' . $kwhPerDay . PHP_EOL;
+                $day->addDay();
+            }
 
             $previous = $model;
         }
@@ -80,9 +76,6 @@ class DailyReadingCreator
                 $value->save();
             }
         });
-
-        // resulting query
-        // SELECT SUM(kwh), MONTH(day) AS mth, YEAR(day) AS yr FROM `daily` WHERE `type` = 1 GROUP BY yr,mth ORDER BY yr,mth
     }
 
 }
