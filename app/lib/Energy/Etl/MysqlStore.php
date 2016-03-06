@@ -2,6 +2,7 @@
 
 namespace Energy\Etl;
 
+use Carbon\Carbon;
 use DateTime;
 
 class MysqlStore implements IDataStore
@@ -16,7 +17,6 @@ class MysqlStore implements IDataStore
 
         $this->table = $type === IDataStore::TYPE_ELECTRICITY ? 'f_electricity' : 'f_gas';
     }
-
     /**
      * @param DateTime $month
      *
@@ -32,9 +32,23 @@ class MysqlStore implements IDataStore
         $q->bindParam(':month', $m);
         $q->bindParam(':year', $y);
 
-        $q->execute();
+        if ($q->rowCount() === 1) {
+            $r = $q->fetch(\PDO::FETCH_ASSOC);
+        } else {
+            // try and get the most recent reading instead
+            $carbon = Carbon::createFromDate($y, $m);
+            $carbon->subMonths(1);
 
-        $r = $q->fetch(\PDO::FETCH_ASSOC);
+            $q = \DB::getPdo()->prepare('SELECT `kwh`, `date` FROM ' . $this->table . ' WHERE MONTH(`date`) = :month AND YEAR(`date`) = :year ORDER BY `date` DESC LIMIT 1');
+
+            $m = $carbon->month;
+            $y = $carbon->year;
+            $q->bindParam(':month', $m);
+            $q->bindParam(':year', $y);
+
+            $q->execute();
+            $r = $q->fetch(\PDO::FETCH_ASSOC);
+        }
 
         return new MonthlyReading($r['kwh'], DateTime::createFromFormat('Y-m-d', $r['date']));
     }
@@ -54,9 +68,23 @@ class MysqlStore implements IDataStore
         $q->bindParam(':month', $m);
         $q->bindParam(':year', $y);
 
-        $q->execute();
+        if ($q->rowCount() === 1) {
+            $r = $q->fetch(\PDO::FETCH_ASSOC);
+        } else {
+            // try and get the most recent reading instead
+            $carbon = Carbon::createFromDate($y, $m);
+            $carbon->addMonths(1);
+            $q = \Db::getPdo()->prepare('SELECT `kwh`, `date` FROM ' . $this->table . ' WHERE MONTH(`date`) = :month AND YEAR(`date`) = :year ORDER BY `date` ASC LIMIT 1');
 
-        $r = $q->fetch(\PDO::FETCH_ASSOC);
+            $m = $carbon->month;
+            $y = $carbon->year;
+
+            $q->bindParam(':month', $m);
+            $q->bindParam(':year', $y);
+            $q->execute();
+
+            $r = $q->fetch(\PDO::FETCH_ASSOC);
+        }
 
         return new MonthlyReading($r['kwh'], DateTime::createFromFormat('Y-m-d', $r['date']));
     }
