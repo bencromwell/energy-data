@@ -83,6 +83,10 @@ class MeterController extends BaseController
             'gDate' => is_null($gasModel1) ? '' : date('d.m.Y', strtotime($gasModel1->date)),
             'eRes'  => $eRes,
             'gRes'  => $gRes,
+            'last' => array(
+                'g' => $gasModel1->volume,
+                'e' => $elecModel1->getKwh(),
+            ),
         ));
     }
 

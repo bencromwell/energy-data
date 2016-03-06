@@ -5,6 +5,9 @@
             <small>{{ $eDate }}</small>
         </h2>
         @if ($eRes)
+        <div class="alert-box small secondary">
+            {{ $last['e'] }}
+        </div>
         <table>
             <tr>
                 <th>Usage (kWh)</th>
@@ -46,6 +49,9 @@
             Gas
             <small>{{ $gDate }}</small>
         </h2>
+        <div class="alert-box small secondary">
+            {{ $last['g'] }}
+        </div>
         @if ($gRes)
         <table>
             <tr>
