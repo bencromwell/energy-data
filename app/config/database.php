@@ -49,9 +49,9 @@ return array(
         'mysql' => array(
             'driver'    => 'mysql',
             'host'      => 'localhost',
-            'database'  => 'energy_dev',
+            'database'  => 'energy',
             'username'  => 'root',
-            'password'  => 'root',
+            'password'  => '',
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
