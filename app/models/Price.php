@@ -5,6 +5,8 @@
  * @property float $gas_kwh
  * @property float $electricity_standing
  * @property float $electricity_kwh
+ * @property \Carbon\Carbon $from
+ * @property \Carbon\Carbon $to
  */
 class Price extends Eloquent implements \Energy\IPrices
 {
@@ -12,6 +14,8 @@ class Price extends Eloquent implements \Energy\IPrices
     protected $table = 'prices';
 
     public $timestamps = false;
+
+    protected $dates = ['from', 'to'];
 
     public function getStandingElectricity()
     {

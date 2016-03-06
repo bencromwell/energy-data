@@ -55,7 +55,7 @@
                 <tr>
                     <td>{{ $e->month }}</td>
                     <td>{{ $e->kwh }}</td>
-                    <td>£{{ number_format($eCalc($e->kwh),2) }}</td>
+                    <td>£{{ number_format($eCalc($e->kwh, $e->month) ,2) }}</td>
                 </tr>
             @endforeach
             </tbody>
@@ -76,7 +76,7 @@
                 <tr>
                     <td>{{ $g->month }}</td>
                     <td>{{ $g->kwh }}</td>
-                    <td>£{{ number_format($gCalc($g->kwh),2) }}</td>
+                    <td>£{{ number_format($gCalc($g->kwh, $g->month), 2) }}</td>
                 </tr>
             @endforeach
             </tbody>

@@ -8,14 +8,47 @@ class MonthlyController extends BaseController
         $elec = \DB::select('SELECT SUM(kwh) AS reading, MONTH(day) AS mth, YEAR(day) AS yr FROM `daily` WHERE `type` = 1 GROUP BY yr,mth ORDER BY yr,mth');
         $gas = \DB::select('SELECT SUM(kwh) AS reading, MONTH(day) AS mth, YEAR(day) AS yr FROM `daily` WHERE `type` = 2 GROUP BY yr,mth ORDER BY yr,mth');
 
-        // for now just go off most recent price
-        $prices = Price::all()->last();
-        $elecCalc = function ($kwh) use ($prices) {
-            return (($prices->getStandingElectricity()) + ($prices->getElectricityKwh() * $kwh)) / 100;
+        $prices = Price::all();
+
+        $prices->sortBy(function (Price $price) {
+            return $price->from;
+        });
+
+        /**
+         * @param \Carbon\Carbon $testDate
+         *
+         * @return null|Price
+         */
+        $getPriceForDate = function (\Carbon\Carbon $testDate) use ($prices) {
+            /** @var Price $price */
+            foreach ($prices as $price) {
+                // most recent price doesn't have a to date
+                if ($price->to->getTimestamp() < 0) {
+                    if ($testDate > $price->from) {
+                        return $price;
+                    }
+                }
+
+                if ($testDate->between($price->from, $price->to)) {
+                    return $price;
+                }
+            }
+
+            return null; // no price for the date
         };
 
-        $gasCalc = function ($kwh) use ($prices) {
-            return (($prices->getStandingGas()) + ($prices->getGasKwh() * $kwh)) / 100;
+        $elecCalc = function ($kwh, $date) use ($prices, $getPriceForDate) {
+            $date = \Carbon\Carbon::createFromFormat('Y-m', $date);
+            /** @var Price $price */
+            $price = $getPriceForDate($date);
+            return (($price->getStandingElectricity()) + ($price->getElectricityKwh() * $kwh)) / 100;
+        };
+
+        $gasCalc = function ($kwh, $date) use ($prices, $getPriceForDate) {
+            $date = \Carbon\Carbon::createFromFormat('Y-m', $date);
+            /** @var Price $price */
+            $price = $getPriceForDate($date);
+            return (($price->getStandingGas()) + ($price->getGasKwh() * $kwh)) / 100;
         };
 
         $eData = [];
