@@ -5,8 +5,8 @@ class MonthlyController extends BaseController
 
     public function index()
     {
-        $elec = \DB::select('SELECT SUM(kwh) AS reading, MONTH(day) AS mth, YEAR(day) AS yr FROM `daily` WHERE `type` = 1 GROUP BY yr,mth ORDER BY yr,mth');
-        $gas = \DB::select('SELECT SUM(kwh) AS reading, MONTH(day) AS mth, YEAR(day) AS yr FROM `daily` WHERE `type` = 2 GROUP BY yr,mth ORDER BY yr,mth');
+        $elec = $this->getReadings(\Energy\Etl\IDataStore::TYPE_ELECTRICITY);
+        $gas = $this->getReadings(\Energy\Etl\IDataStore::TYPE_GAS);
 
         $prices = Price::all();
 
@@ -65,26 +65,7 @@ class MonthlyController extends BaseController
         $this->populateData($elec, $chart['e'], $eData, $standardise);
         $this->populateData($gas, $chart['g'], $gData, $standardise);
 
-        $from = DateTime::createFromFormat('Y-m-d', $startFrom); // todo: config or retrieve dynamically
-        $from->setTime(0, 0, 0);
-
-        $now  = new DateTime();
-        $now->setDate(date('Y'), date('m'), 1);
-        $now->setTime(0, 0, 1);
-
-        $months = array();
-        do {
-            $months[] = $from->format('Y-m');
-
-            // don't like this duplicate condition. too tired to think of an alternative right now!
-            if ($from->getTimestamp() < $now->getTimestamp()) {
-                $from->add(new DateInterval('P1M'));
-            }
-
-        } while ($from->getTimestamp() < $now->getTimestamp());
-
         return View::make('monthly', array(
-            'months'      => $months,
             'electricity' => $eData,
             'gas'         => $gData,
             'gCalc'       => $gasCalc,
@@ -92,6 +73,32 @@ class MonthlyController extends BaseController
 
             'chart'       => json_encode($chart),
         ));
+    }
+
+    private function getReadings($type)
+    {
+        $sql = <<<SQL
+SELECT
+    SUM(`kwh`) AS reading,
+    MONTH(`day`) AS mth,
+    YEAR(`day`) AS yr
+FROM
+    `daily`
+WHERE
+    `type` = :type
+AND
+    `day` < :pointInTime
+GROUP BY yr, mth
+ORDER BY yr, mth
+SQL;
+
+        $pointInTime = new \Carbon\Carbon();
+        $pointInTime->startOfMonth();
+
+        return \DB::select($sql, [
+            ':type' => $type,
+            ':pointInTime' => $pointInTime->format('Y-m-d'),
+        ]);
     }
 
     private function populateData($sourceData, &$chart, &$dataRows, $standardise = false)
