@@ -37,7 +37,7 @@
             @foreach ($electricity as $e)
                 <tr>
                     <td>{{ $e->month }}</td>
-                    <td>{{ $e->kwh * 30 }}</td>
+                    <td>{{ $e->kwh }}</td>
                     <td>£{{ number_format($eCalc($e->kwh),2) }}</td>
                 </tr>
             @endforeach
@@ -58,7 +58,7 @@
             @foreach ($gas as $g)
                 <tr>
                     <td>{{ $g->month }}</td>
-                    <td>{{ $g->kwh * 30 }}</td>
+                    <td>{{ $g->kwh }}</td>
                     <td>£{{ number_format($gCalc($g->kwh),2) }}</td>
                 </tr>
             @endforeach
