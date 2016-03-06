@@ -8,9 +8,6 @@ class MonthlyController extends BaseController
         $elec = \DB::select('SELECT SUM(kwh) AS reading, MONTH(day) AS mth, YEAR(day) AS yr FROM `daily` WHERE `type` = 1 GROUP BY yr,mth ORDER BY yr,mth');
         $gas = \DB::select('SELECT SUM(kwh) AS reading, MONTH(day) AS mth, YEAR(day) AS yr FROM `daily` WHERE `type` = 2 GROUP BY yr,mth ORDER BY yr,mth');
 
-
-        // @todo standardise results to a 30 day month
-
         // for now just go off most recent price
         $prices = Price::all()->last();
         $elecCalc = function ($kwh) use ($prices) {
