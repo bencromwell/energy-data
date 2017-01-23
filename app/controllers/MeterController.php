@@ -1,7 +1,5 @@
 <?php
 
-use Energy\CostCalculator;
-
 class MeterController extends BaseController
 {
 
@@ -63,8 +61,8 @@ class MeterController extends BaseController
     {
         $prices = $this->getPricesModel();
 
-        $eCalc = new CostCalculator(CostCalculator::TYPE_ELECTRICITY);
-        $gCalc = new CostCalculator(CostCalculator::TYPE_GAS);
+        $eCalc = new \Energy\ElectricityCostCalculator();
+        $gCalc = new \Energy\GasCostCalculator();
 
         if (!is_null($elecModel1) && !is_null($elecModel2) && $elecModel1->id !== $elecModel2->id) {
             $eRes = $eCalc->calculate($elecModel1, $elecModel2, $prices);

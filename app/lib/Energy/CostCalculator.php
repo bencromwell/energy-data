@@ -5,18 +5,8 @@ namespace Energy;
 use DateTime;
 use DateInterval;
 
-class CostCalculator
+abstract class CostCalculator
 {
-
-    const TYPE_GAS = 0;
-    const TYPE_ELECTRICITY = 1;
-
-    private $_type;
-
-    public function __construct($type)
-    {
-        $this->_type = $type;
-    }
 
     /**
      * @param ICalculable $model1
@@ -37,13 +27,18 @@ class CostCalculator
 
         $days = $di->days;
 
-        if ($this->_type === self::TYPE_ELECTRICITY) {
-            $cost = ($prices->getStandingElectricity() * $days) + ($prices->getElectricityKwh() * $kwh);
-        } else {
-            $cost = ($prices->getStandingGas() * $days) + ($prices->getGasKwh() * $kwh);
-        }
+        $cost = $this->getCost($prices, $days, $kwh);
 
         return new CostResult($kwh, $cost, $days);
     }
+
+    /**
+     * @param IPrices $prices
+     * @param int     $days
+     * @param int     $kwh
+     *
+     * @return int cost in pence
+     */
+    abstract protected function getCost(IPrices $prices, $days, $kwh);
 
 }
