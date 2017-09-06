@@ -41,14 +41,20 @@ class MonthlyController extends BaseController
             $date = \Carbon\Carbon::createFromFormat('Y-m', $date);
             /** @var Price $price */
             $price = $getPriceForDate($date);
-            return (($price->getStandingElectricity()) + ($price->getElectricityKwh() * $kwh)) / 100;
+            if ($price) {
+                return (($price->getStandingElectricity()) + ($price->getElectricityKwh() * $kwh)) / 100;
+            }
+            return '';
         };
 
         $gasCalc = function ($kwh, $date) use ($prices, $getPriceForDate) {
             $date = \Carbon\Carbon::createFromFormat('Y-m', $date);
             /** @var Price $price */
             $price = $getPriceForDate($date);
-            return (($price->getStandingGas()) + ($price->getGasKwh() * $kwh)) / 100;
+            if ($price) {
+                return (($price->getStandingGas()) + ($price->getGasKwh() * $kwh)) / 100;
+            }
+            return '';
         };
 
         $eData = [];
