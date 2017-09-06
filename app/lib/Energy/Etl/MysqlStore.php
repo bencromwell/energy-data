@@ -50,7 +50,9 @@ class MysqlStore implements IDataStore
             $r = $q->fetch(\PDO::FETCH_ASSOC);
         }
 
-        return new MonthlyReading($r['kwh'], DateTime::createFromFormat('Y-m-d', $r['date']));
+        if ($r) {
+            return new MonthlyReading($r['kwh'], DateTime::createFromFormat('Y-m-d', $r['date']));
+        }
     }
 
     /**
@@ -86,7 +88,9 @@ class MysqlStore implements IDataStore
             $r = $q->fetch(\PDO::FETCH_ASSOC);
         }
 
-        return new MonthlyReading($r['kwh'], DateTime::createFromFormat('Y-m-d', $r['date']));
+        if ($r) {
+            return new MonthlyReading($r['kwh'], DateTime::createFromFormat('Y-m-d', $r['date']));
+        }
     }
 
     /**

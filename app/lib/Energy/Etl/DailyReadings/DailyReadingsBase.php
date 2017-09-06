@@ -1,39 +1,37 @@
 <?php
 
-namespace Energy\Etl;
+namespace Energy\Etl\DailyReadings;
 
 use Carbon\Carbon;
+use Energy\Etl\IDataStore;
+use Energy\ICalculable;
 
-class DailyReadingCreator
+abstract class DailyReadingsBase
 {
 
+    /** @var int */
     protected $type;
+
+    /** @var string */
     protected $table;
 
-    public function __construct($type)
+    public function __construct()
     {
-        $this->type = (int) $type;
-
-        $this->table = $type === IDataStore::TYPE_ELECTRICITY ? 'f_electricity' : 'f_gas';
+        $this->table = $this->type === IDataStore::TYPE_ELECTRICITY ? 'f_electricity' : 'f_gas';
     }
+
+    /**
+     * @return ICalculable[]
+     */
+    abstract protected function getValues();
 
     public function go()
     {
-        if ($this->type === IDataStore::TYPE_ELECTRICITY) {
-            $values = \Electricity::all()->sortBy(function (\Electricity $model) {
-                return $model->date;
-            });
-        } else {
-            $values = \Gas::all()->sortBy(function (\Gas $model) {
-                return $model->date;
-            });
-        }
+        $values = $this->getValues();
 
         // for now, just wipe it and recreate the lot
         // future addition - record the last reading we had and only process new values
         \DB::delete('DELETE FROM `daily` WHERE `type` = :type', [':type' => $this->type]);
-
-        /** @var \Energy\ICalculable[] $values */
 
         /** @var \Daily[] $dailyReadings */
         $dailyReadings = [];
@@ -77,5 +75,4 @@ class DailyReadingCreator
             }
         });
     }
-
 }
