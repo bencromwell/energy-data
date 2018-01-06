@@ -58,8 +58,8 @@
                     @foreach ($years as $year)
                         @if(isset($electricity[$year], $electricity[$year][$i]))
                         <td>
-                            {{ $electricity[$year][$i]->kwh }}<br>
-                            £{{ number_format($eCalc($electricity[$year][$i]->kwh, $electricity[$year][$i]->month) ,2) }}
+                            <span class="monthly-table-kw">{{ $electricity[$year][$i]->kwh }}</span><br>
+                            <span class="monthly-table-cost">£{{ number_format($eCalc($electricity[$year][$i]->kwh, $electricity[$year][$i]->month) ,2) }}</span>
                         </td>
                         @else
                             <td></td>
@@ -88,8 +88,8 @@
                     @foreach ($years as $year)
                         @if(isset($gas[$year], $gas[$year][$i]))
                         <td>
-                            {{ $gas[$year][$i]->kwh }}<br>
-                            £{{ number_format($gCalc($gas[$year][$i]->kwh, $gas[$year][$i]->month) ,2) }}
+                            <span class="monthly-table-kw">{{ $gas[$year][$i]->kwh }}</span><br>
+                            <span class="monthly-table-cost">£{{ number_format($gCalc($gas[$year][$i]->kwh, $gas[$year][$i]->month) ,2) }}</span>
                         </td>
                         @else
                             <td></td>
