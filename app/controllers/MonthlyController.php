@@ -71,7 +71,10 @@ class MonthlyController extends BaseController
         $this->populateData($elec, $chart['e'], $eData, $standardise);
         $this->populateData($gas, $chart['g'], $gData, $standardise);
 
+        $years = array_unique(array_merge(array_keys($eData), array_keys($gData)));
+
         return View::make('monthly', array(
+            'years'       => $years,
             'electricity' => $eData,
             'gas'         => $gData,
             'gCalc'       => $gasCalc,
@@ -124,7 +127,11 @@ SQL;
             $obj->month = $monthlyEntity->getMonth();
             $obj->kwh = $reading;
 
-            $dataRows[] = $obj;
+            if (empty($dataRows[$monthlyEntity->getYear()])) {
+                $dataRows[$monthlyEntity->getYear()] = [];
+            }
+
+            $dataRows[$monthlyEntity->getYear()][$monthlyEntity->getDateTime()->month] = $obj;
         }
     }
 

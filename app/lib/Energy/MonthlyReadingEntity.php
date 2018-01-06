@@ -44,6 +44,14 @@ class MonthlyReadingEntity
     }
 
     /**
+     * @return string
+     */
+    public function getYear()
+    {
+        return $this->dateTime->format('Y');
+    }
+
+    /**
      * @param bool $raw - raw reading (float) or processed (rounded to an int)?
      *
      * @return int|float

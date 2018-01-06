@@ -46,18 +46,19 @@
             <thead>
                 <tr>
                     <th>Month</th>
-                    <th>kWh</th>
-                    <th>Cost</th>
+                    @foreach ($years as $year)
+                        <th>{{ $year }}</th>
+                    @endforeach
                 </tr>
             </thead>
             <tbody>
-            @foreach ($electricity as $e)
+            @for($i = 1; $i<= 12; $i++)
                 <tr>
-                    <td>{{ $e->month }}</td>
-                    <td>{{ $e->kwh }}</td>
-                    <td>£{{ number_format($eCalc($e->kwh, $e->month) ,2) }}</td>
+                    <td>{{ $i }}</td>
+                    <td>{{ $electricity[$i]->kwh }}</td>
+                    <td>£{{ number_format($eCalc($electricity[$i]->kwh, $electricity[$i]->month) ,2) }}</td>
                 </tr>
-            @endforeach
+            @endfor
             </tbody>
         </table>
     </div>
@@ -67,18 +68,19 @@
             <thead>
                 <tr>
                     <th>Month</th>
-                    <th>kWh</th>
-                    <th>Cost</th>
+                    @foreach ($years as $year)
+                        <th>{{ $year }}</th>
+                    @endforeach
                 </tr>
             </thead>
             <tbody>
-            @foreach ($gas as $g)
+            @for($i = 1; $i<= 12; $i++)
                 <tr>
-                    <td>{{ $g->month }}</td>
-                    <td>{{ $g->kwh }}</td>
-                    <td>£{{ number_format($gCalc($g->kwh, $g->month), 2) }}</td>
+                    <td>{{ $i }}</td>
+                    <td>{{ $gas[$i]->kwh }}</td>
+                    <td>£{{ number_format($gCalc($gas[$i]->kwh, $gas[$i]->month) ,2) }}</td>
                 </tr>
-            @endforeach
+            @endfor
             </tbody>
         </table>
 
