@@ -53,13 +53,19 @@
             </thead>
             <tbody>
             @for($i = 1; $i <= 12; $i++)
-                @if(isset($electricty[$year][$i]))
-                    <tr>
-                        <td>{{ $i }}</td>
-                        <td>{{ $electricity[$year][$i]->kwh }}</td>
-                        <td>£{{ number_format($eCalc($electricity[$year][$i]->kwh, $electricity[$year][$i]->month) ,2) }}</td>
-                    </tr>
-                @endif
+                <tr>
+                    <td>{{ $i }}</td>
+                    @foreach ($years as $year)
+                        @if(isset($electricity[$year], $electricity[$year][$i]))
+                        <td>
+                            {{ $electricity[$year][$i]->kwh }}<br>
+                            £{{ number_format($eCalc($electricity[$year][$i]->kwh, $electricity[$year][$i]->month) ,2) }}
+                        </td>
+                        @else
+                            <td></td>
+                        @endif
+                    @endforeach
+                </tr>
             @endfor
             </tbody>
         </table>
@@ -77,13 +83,19 @@
             </thead>
             <tbody>
             @for($i = 1; $i <= 12; $i++)
-                @if(isset($gas[$year][$i]))
-                    <tr>
-                        <td>{{ $i }}</td>
-                        <td>{{ $gas[$year][$i]->kwh }}</td>
-                        <td>£{{ number_format($gCalc($gas[$year][$i]->kwh, $gas[$year][$i]->month) ,2) }}</td>
-                    </tr>
-                @endif
+                <tr>
+                    <td>{{ $i }}</td>
+                    @foreach ($years as $year)
+                        @if(isset($gas[$year], $gas[$year][$i]))
+                        <td>
+                            {{ $gas[$year][$i]->kwh }}<br>
+                            £{{ number_format($gCalc($gas[$year][$i]->kwh, $gas[$year][$i]->month) ,2) }}
+                        </td>
+                        @else
+                            <td></td>
+                        @endif
+                    @endforeach
+                </tr>
             @endfor
             </tbody>
         </table>
