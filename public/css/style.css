@@ -9,3 +9,11 @@ h1 {
 .right-border {
     border-right: 1px solid #ddd;
 }
+
+.monthly-table-kw {
+    color: #1622ff;
+}
+
+.monthly-table-cost {
+    color: #ff5d00;
+}
