@@ -53,11 +53,13 @@
             </thead>
             <tbody>
             @for($i = 1; $i<= 12; $i++)
-                <tr>
-                    <td>{{ $i }}</td>
-                    <td>{{ $electricity[$i]->kwh }}</td>
-                    <td>£{{ number_format($eCalc($electricity[$i]->kwh, $electricity[$i]->month) ,2) }}</td>
-                </tr>
+                @if(isset($electricty[$i]))
+                    <tr>
+                        <td>{{ $i }}</td>
+                        <td>{{ $electricity[$i]->kwh }}</td>
+                        <td>£{{ number_format($eCalc($electricity[$i]->kwh, $electricity[$i]->month) ,2) }}</td>
+                    </tr>
+                @endif
             @endfor
             </tbody>
         </table>
@@ -75,11 +77,13 @@
             </thead>
             <tbody>
             @for($i = 1; $i<= 12; $i++)
-                <tr>
-                    <td>{{ $i }}</td>
-                    <td>{{ $gas[$i]->kwh }}</td>
-                    <td>£{{ number_format($gCalc($gas[$i]->kwh, $gas[$i]->month) ,2) }}</td>
-                </tr>
+                @if(isset($gas[$i]))
+                    <tr>
+                        <td>{{ $i }}</td>
+                        <td>{{ $gas[$i]->kwh }}</td>
+                        <td>£{{ number_format($gCalc($gas[$i]->kwh, $gas[$i]->month) ,2) }}</td>
+                    </tr>
+                @endif
             @endfor
             </tbody>
         </table>
