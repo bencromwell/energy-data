@@ -1,5 +1,7 @@
 <?php
 
+use Energy\SmartMeters;
+
 class MeterController extends BaseController
 {
 
@@ -22,6 +24,12 @@ class MeterController extends BaseController
 
         $post['electricity'] = (int) $post['electricity'];
         $post['gas']         = (int) $post['gas'];
+
+        // horrendous horrendous hack alert - smart meters were installed resetting the readings to 0
+        if (SmartMeters::isSmartMeter($dt)) {
+            $post['electricity'] = SmartMeters::addElectric($post['electricity']);
+            $post['gas'] = SmartMeters::addGas($post['gas']);
+        }
 
         if (!empty($post['electricity']) && $post['electricity'] > 0) {
 
@@ -84,6 +92,10 @@ class MeterController extends BaseController
             'last' => array(
                 'g' => $gasModel1->volume,
                 'e' => $elecModel1->getKwh(),
+            ),
+            'lastSmart' => array(
+                'g' => SmartMeters::subtractGas($gasModel1->volume),
+                'e' => SmartMeters::subtractElectric($elecModel1->getKwh()),
             ),
         ));
     }

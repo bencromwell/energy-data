@@ -6,7 +6,7 @@
         </h2>
         @if ($eRes)
         <div class="alert-box small secondary">
-            {{ $last['e'] }}
+            {{ $last['e'] }} <small>({{ $lastSmart['e'] }})</small>
         </div>
         <table>
             <tr>
@@ -50,7 +50,7 @@
             <small>{{ $gDate }}</small>
         </h2>
         <div class="alert-box small secondary">
-            {{ $last['g'] }}
+            {{ $last['g'] }} <small>({{ $lastSmart['g'] }})</small>
         </div>
         @if ($gRes)
         <table>
