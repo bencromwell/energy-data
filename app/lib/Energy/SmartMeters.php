@@ -8,9 +8,9 @@ use DateTimeInterface;
 class SmartMeters
 {
     // final meter readings from before the smart meter install were 30971 and 6248 on 9/4/21
-    public const ELECTRICITY_FINAL = 30971;
-    public const GAS_FINAL = 6248;
-    public const FINAL_DATE = '2021-04-09';
+    const ELECTRICITY_FINAL = 30971;
+    const GAS_FINAL = 6248;
+    const FINAL_DATE = '2021-04-09';
 
     public static function changeoverDate(): DateTimeInterface
     {
